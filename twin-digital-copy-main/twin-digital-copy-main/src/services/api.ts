@@ -128,12 +128,12 @@ class ApiService {
   }
 
   // User Profile
-  async getUserProfile(): Promise<any> {
-    return this.request<any>('/user/profile');
+  async getUserProfile(): Promise<unknown> {
+    return this.request<unknown>('/user/profile');
   }
 
-  async updateUserProfile(profile: any): Promise<any> {
-    return this.request<any>('/user/profile', {
+  async updateUserProfile(profile: any): Promise<unknown> {
+    return this.request<unknown>('/user/profile', {
       method: 'POST',
       body: JSON.stringify(profile),
     });
