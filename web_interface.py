@@ -4,7 +4,7 @@ Run this to get a web-based interface for testing
 """
 
 from flask import Flask, render_template_string, request, jsonify
-from rag_internship_recommender import InternshipRecommender
+from integrated_recommender import IntegratedRecommender
 from config import get_api_key, is_api_configured
 import json
 import os
@@ -15,11 +15,10 @@ app = Flask(__name__)
 recommender = None
 
 def get_recommender():
-    """Lazy initialization of recommender"""
+    """Lazy initialization of integrated recommender"""
     global recommender
     if recommender is None:
-        api_key = get_api_key() or "dummy_key"
-        recommender = InternshipRecommender("internships_all_streams_edited.csv", api_key)
+        recommender = IntegratedRecommender("internships_all_streams_edited.csv")
     return recommender
 
 # HTML template for the web interface
@@ -152,9 +151,9 @@ HTML_TEMPLATE = """
         <h1>🎯 RAG Internship Recommendation System</h1>
         
         <div class="api-key-section" id="api-status">
-            <strong>🔍 API Status:</strong> 
+            <strong>🔍 System Status:</strong> 
             <span id="api-status-text">Checking...</span>
-            <br><small>If API is not connected, system will work with TF-IDF similarity only.</small>
+            <br><small>System automatically falls back to ChromaDB + Ollama if API fails.</small>
         </div>
         
         <form id="recommendationForm">
@@ -205,30 +204,37 @@ HTML_TEMPLATE = """
     </div>
 
     <script>
-        // Check API status on page load
-        async function checkApiStatus() {
+        // Check system status on page load
+        async function checkSystemStatus() {
             try {
-                const response = await fetch('/api-status');
+                const response = await fetch('/system-status');
                 const data = await response.json();
                 const statusElement = document.getElementById('api-status-text');
                 const statusDiv = document.getElementById('api-status');
                 
-                if (data.configured) {
-                    statusElement.textContent = `✅ ${data.message}`;
+                let statusText = '';
+                if (data.primary_available && data.backup_available) {
+                    statusText = `✅ Full System Ready (API + Backup)`;
                     statusDiv.style.backgroundColor = '#d5f4e6';
                     statusDiv.style.borderLeftColor = '#27ae60';
+                } else if (data.backup_available) {
+                    statusText = `🔄 Backup System Ready (ChromaDB + Ollama)`;
+                    statusDiv.style.backgroundColor = '#fff3cd';
+                    statusDiv.style.borderLeftColor = '#ffc107';
                 } else {
-                    statusElement.textContent = `❌ ${data.message}`;
+                    statusText = `❌ System Not Ready`;
                     statusDiv.style.backgroundColor = '#fdf2f2';
                     statusDiv.style.borderLeftColor = '#e74c3c';
                 }
+                
+                statusElement.textContent = statusText;
             } catch (error) {
-                document.getElementById('api-status-text').textContent = '❌ Error checking API status';
+                document.getElementById('api-status-text').textContent = '❌ Error checking system status';
             }
         }
         
-        // Check API status when page loads
-        checkApiStatus();
+        // Check system status when page loads
+        checkSystemStatus();
         
         document.getElementById('recommendationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -259,11 +265,16 @@ HTML_TEMPLATE = """
                 }
                 
                 // Display recommendations
+                let methodText = result.method === 'primary' ? 'OpenRouter API (Mistral-7B)' : 'TF-IDF (Backup)';
+                let methodIcon = result.method === 'primary' ? '🤖' : '🔄';
+                
                 let html = `
                     <div style="margin-bottom: 20px; padding: 15px; background: #d5f4e6; border-radius: 5px;">
                         <strong>📊 Analysis Summary:</strong><br>
                         • Total internships analyzed: ${result.total_internships_analyzed}<br>
-                        • Recommendations provided: ${result.recommendations.length}
+                        • Recommendations provided: ${result.recommendations.length}<br>
+                        • Method used: ${methodIcon} ${methodText}<br>
+                        • Fallback used: ${result.fallback_used ? 'Yes' : 'No'}
                     </div>
                 `;
                 
@@ -323,28 +334,19 @@ def health():
     """Health check endpoint"""
     return jsonify({'status': 'healthy', 'message': 'RAG Internship Recommender is running'})
 
-@app.route('/api-status')
-def api_status():
-    """Check API status"""
+@app.route('/system-status')
+def system_status():
+    """Check integrated system status"""
     try:
-        if is_api_configured():
-            api_key = get_api_key()
-            return jsonify({
-                'status': 'connected',
-                'message': f'API key configured: {api_key[:10]}...{api_key[-4:]}',
-                'configured': True
-            })
-        else:
-            return jsonify({
-                'status': 'not_configured',
-                'message': 'API key not set. Set OPENROUTER_API_KEY environment variable.',
-                'configured': False
-            })
+        rec = get_recommender()
+        status = rec.get_system_status()
+        return jsonify(status)
     except Exception as e:
         return jsonify({
-            'status': 'error',
-            'message': f'Error checking API status: {str(e)}',
-            'configured': False
+            'primary_available': False,
+            'backup_available': False,
+            'api_configured': False,
+            'error': str(e)
         })
 
 if __name__ == '__main__':

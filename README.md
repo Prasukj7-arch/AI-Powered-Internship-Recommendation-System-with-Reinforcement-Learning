@@ -1,6 +1,6 @@
 # RAG Internship Recommendation System
 
-AI-powered internship recommendation engine using RAG (Retrieval-Augmented Generation) architecture.
+AI-powered internship recommendation engine with automatic fallback system. Uses OpenRouter API (Mistral-7B) as primary method and TF-IDF similarity as backup when API limits are reached.
 
 ## 🚀 Quick Start
 
@@ -17,9 +17,9 @@ set OPENROUTER_API_KEY=your_api_key_here
 
 ### 3. Run the System
 
-**Command Line:**
+**Integrated System (Recommended):**
 ```bash
-python rag_internship_recommender.py
+python integrated_recommender.py
 ```
 
 **Web Interface:**
@@ -28,10 +28,21 @@ python web_interface.py
 # Then open: http://localhost:5000
 ```
 
+**Individual Systems:**
+```bash
+# Primary system only
+python rag_internship_recommender.py
+
+# Backup system only
+python simple_backup_recommender.py
+```
+
 ## 📁 Files
 
-- `rag_internship_recommender.py` - Main recommendation engine
-- `web_interface.py` - Web interface
+- `integrated_recommender.py` - **Main integrated system (recommended)**
+- `rag_internship_recommender.py` - Primary recommendation engine (OpenRouter API)
+- `simple_backup_recommender.py` - Backup system (TF-IDF only)
+- `web_interface.py` - Web interface with integrated system
 - `config.py` - Configuration settings
 - `internships_all_streams_edited.csv` - Dataset (200 internships)
 - `requirements.txt` - Python dependencies
@@ -39,10 +50,12 @@ python web_interface.py
 ## 🎯 Features
 
 - **200 Internships**: Real internship data
-- **AI Recommendations**: Uses Mistral-7B model
-- **Smart Matching**: TF-IDF + LLM reasoning
-- **Web Interface**: User-friendly form
-- **Detailed Analysis**: Match scores and reasoning
+- **Dual System**: OpenRouter API + TF-IDF backup
+- **Automatic Fallback**: Seamlessly switches to backup when API fails
+- **Smart Matching**: AI reasoning + similarity matching
+- **Web Interface**: User-friendly form with system status
+- **Detailed Analysis**: Match scores (75-95%) and reasoning
+- **No External Dependencies**: Backup system works without Ollama/ChromaDB
 
 ## 📊 Dataset
 
@@ -56,10 +69,10 @@ The system uses `internships_all_streams_edited.csv` with 200 real internship op
 
 ### Command Line
 ```python
-from rag_internship_recommender import InternshipRecommender
+from integrated_recommender import IntegratedRecommender
 
-# Initialize
-recommender = InternshipRecommender("internships_all_streams_edited.csv", "your_api_key")
+# Initialize integrated system
+recommender = IntegratedRecommender("internships_all_streams_edited.csv")
 
 # Sample candidate
 candidate = {
