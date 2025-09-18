@@ -140,7 +140,7 @@ class ApiService {
   }
 
   // Applications
-  async applyForInternship(internshipId: string, userId: number): Promise<{
+  async applyForInternship(internshipId: string, userId: string | number, candidateProfile?: any): Promise<{
     success: boolean;
     message: string;
     application_id: string;
@@ -154,8 +154,82 @@ class ApiService {
       body: JSON.stringify({
         internship_id: internshipId,
         user_id: userId,
+        candidate_profile: candidateProfile,
       }),
     });
+  }
+
+  // Improved Recommendations
+  async getImprovedRecommendations(profile: CandidateProfile): Promise<RecommendationResult> {
+    return this.request<RecommendationResult>('/improved-recommendations', {
+      method: 'POST',
+      body: JSON.stringify(profile),
+    });
+  }
+
+  // Recruiter Dashboard
+  async getRecruiterApplications(): Promise<{
+    applications: any[];
+    total: number;
+  }> {
+    return this.request<{
+      applications: any[];
+      total: number;
+    }>('/recruiter/applications');
+  }
+
+  async getRecruiterDashboard(): Promise<any> {
+    return this.request<any>('/recruiter/dashboard');
+  }
+
+  async reviewApplication(applicationId: string, reviewData: any): Promise<{
+    message: string;
+    application_id: string;
+    decision: string;
+    feedback_id: string;
+  }> {
+    return this.request<{
+      message: string;
+      application_id: string;
+      decision: string;
+      feedback_id: string;
+    }>(`/recruiter/application/${applicationId}/review`, {
+      method: 'POST',
+      body: JSON.stringify(reviewData),
+    });
+  }
+
+  // Candidate Feedback
+  async getCandidateApplications(candidateId: string): Promise<{
+    applications: any[];
+    total: number;
+  }> {
+    return this.request<{
+      applications: any[];
+      total: number;
+    }>(`/candidate/applications/${candidateId}`);
+  }
+
+  async getCandidateFeedbackHistory(candidateId: string): Promise<{
+    candidate_id: string;
+    feedback_history: any[];
+    total_feedback: number;
+  }> {
+    return this.request<{
+      candidate_id: string;
+      feedback_history: any[];
+      total_feedback: number;
+    }>(`/candidate/feedback-history/${candidateId}`);
+  }
+
+  async getLearningSummary(candidateId: string): Promise<{
+    candidate_id: string;
+    learning_summary: any;
+  }> {
+    return this.request<{
+      candidate_id: string;
+      learning_summary: any;
+    }>(`/learning-summary/${candidateId}`);
   }
 
   // User Recommendations

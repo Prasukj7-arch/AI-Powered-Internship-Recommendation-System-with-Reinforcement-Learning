@@ -66,7 +66,8 @@ const MainContent = () => {
         experience: "2 months data science internship, 1 year coding experience",
         interests: "AI/ML, Data Science, Software Development, Web Development",
         location: "Tirupati, ANDHRA PRADESH",
-        goals: "Become a senior data scientist in a leading tech company"
+        goals: "Become a senior data scientist in a leading tech company",
+        candidate_id: "550e8400-e29b-41d4-a716-446655440000"
       };
       
       console.log("🔍 Getting recommendations with profile:", profile);
@@ -136,6 +137,7 @@ const MainContent = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="flex-1 p-6">

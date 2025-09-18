@@ -214,7 +214,9 @@ class InternshipRecommender:
         IMPORTANT: 
         - Use match_score as percentage (75-95)
         - Do NOT include gaps_to_address field
-        - Return ONLY the JSON array, no other text.
+        - Return ONLY the JSON array, no other text
+        - Ensure the JSON is valid and properly formatted
+        - If you cannot create valid JSON, return an empty array []
         """
         
         # Call the LLM
@@ -247,27 +249,78 @@ class InternshipRecommender:
                 response_clean = response_clean.strip()
                 
                 # Try to find JSON array in the response
+                recommendations = None
+                
+                # First try: Direct JSON array
                 if response_clean.startswith('[') and response_clean.endswith(']'):
-                    recommendations = json.loads(response_clean)
-                else:
-                    # Look for JSON array in the response
+                    try:
+                        recommendations = json.loads(response_clean)
+                    except json.JSONDecodeError:
+                        pass
+                
+                # Second try: Look for JSON array within the response
+                if recommendations is None:
                     start_idx = response_clean.find('[')
                     end_idx = response_clean.rfind(']')
-                    if start_idx != -1 and end_idx != -1:
+                    if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
                         json_str = response_clean[start_idx:end_idx+1]
-                        recommendations = json.loads(json_str)
-                    else:
-                        raise json.JSONDecodeError("No JSON array found", response, 0)
+                        try:
+                            recommendations = json.loads(json_str)
+                        except json.JSONDecodeError:
+                            pass
+                
+                # Third try: Look for JSON object with recommendations array
+                if recommendations is None:
+                    try:
+                        # Try to parse as JSON object and look for recommendations key
+                        json_obj = json.loads(response_clean)
+                        if isinstance(json_obj, dict) and 'recommendations' in json_obj:
+                            recommendations = json_obj['recommendations']
+                        elif isinstance(json_obj, list):
+                            recommendations = json_obj
+                    except json.JSONDecodeError:
+                        pass
+                
+                # Fourth try: Use regex to extract JSON array
+                if recommendations is None:
+                    import re
+                    json_pattern = r'\[.*?\]'
+                    matches = re.findall(json_pattern, response_clean, re.DOTALL)
+                    for match in matches:
+                        try:
+                            recommendations = json.loads(match)
+                            break
+                        except json.JSONDecodeError:
+                            continue
+                
+                # If still no valid JSON found, raise error
+                if recommendations is None:
+                    raise json.JSONDecodeError("No valid JSON array found in response", response, 0)
                 
                 # Validate the recommendations
                 if isinstance(recommendations, list) and len(recommendations) > 0:
-                    return recommendations
+                    # Additional validation: ensure each recommendation has required fields
+                    validated_recommendations = []
+                    for rec in recommendations:
+                        if isinstance(rec, dict) and 'company' in rec and 'title' in rec:
+                            validated_recommendations.append(rec)
+                    
+                    if len(validated_recommendations) > 0:
+                        return validated_recommendations
+                    else:
+                        raise json.JSONDecodeError("No valid recommendations found", response, 0)
                 else:
                     raise json.JSONDecodeError("Invalid recommendations format", response, 0)
                     
             except json.JSONDecodeError as e:
                 print(f"⚠️ Could not parse LLM response as JSON: {e}")
                 print(f"Response: {response[:200]}...")
+                print("🔄 Using fallback recommendations instead")
+                return self.create_fallback_recommendations(similar_internships.head(5))
+            except Exception as e:
+                print(f"⚠️ Unexpected error parsing LLM response: {e}")
+                print(f"Response: {response[:200]}...")
+                print("🔄 Using fallback recommendations instead")
                 return self.create_fallback_recommendations(similar_internships.head(5))
         else:
             print("⚠️ LLM API call failed, using fallback recommendations")

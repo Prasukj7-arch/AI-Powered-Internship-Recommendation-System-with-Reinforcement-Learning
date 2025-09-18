@@ -11,6 +11,10 @@ import pandas as pd
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
+from supabase_client import supabase_client
+import uuid
+from datetime import datetime
+from reinforcement_learning import rl_system
 
 # Load environment variables
 load_dotenv()
@@ -232,15 +236,55 @@ def apply_for_internship():
         data = request.get_json()
         internship_id = data.get('internship_id')
         user_id = data.get('user_id')
+        candidate_profile = data.get('candidate_profile', {})
         
         if not internship_id or not user_id:
             return jsonify({"error": "Missing internship_id or user_id"}), 400
+        
+        # Find the internship details
+        internship = next((i for i in internships_data if i.get('internshipId') == internship_id), None)
+        if not internship:
+            return jsonify({"error": "Internship not found"}), 404
+        
+        # Prepare application data for Supabase
+        # Convert user_id to UUID format or use a default UUID
+        if isinstance(user_id, int):
+            # Convert integer to UUID string format
+            candidate_uuid = f"550e8400-e29b-41d4-a716-{user_id:012d}"
+        else:
+            candidate_uuid = str(user_id)
+        
+        application_data = {
+            "candidate_id": candidate_uuid,
+            "internship_id": internship_id,
+            "company_name": internship.get('company', ''),
+            "internship_title": internship.get('title', ''),
+            "application_data": {
+                "candidate_profile": candidate_profile,
+                "internship_details": internship,
+                "applied_at": datetime.now().isoformat()
+            },
+            "status": "pending"
+        }
+        
+        # Save to Supabase if available
+        if supabase_client.is_connected():
+            import asyncio
+            result = asyncio.run(supabase_client.create_application(application_data))
+            if result:
+                application_id = result.get('id')
+                print(f"✅ Application saved to Supabase: {application_id}")
+            else:
+                print("⚠️ Failed to save application to Supabase")
+        else:
+            print("⚠️ Supabase not connected, application not persisted")
         
         return jsonify({
             "message": "Application submitted successfully",
             "internship_id": internship_id,
             "user_id": user_id,
-            "status": "pending"
+            "status": "pending",
+            "application_id": str(uuid.uuid4()) if not supabase_client.is_connected() else None
         })
         
     except Exception as e:
@@ -269,7 +313,7 @@ def system_status():
     """Get detailed system status"""
     try:
         return jsonify({
-            "supabase_connected": False,  # We'll enable this later
+            "supabase_connected": supabase_client.is_connected(),
             "rag_available": bool(recommender),
             "backup_available": True,
             "total_internships": len(internships_data),
@@ -280,6 +324,235 @@ def system_status():
         })
         
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# New endpoints for recruiter dashboard and feedback system
+
+@app.route('/api/recruiter/applications', methods=['GET'])
+def get_pending_applications():
+    """Get all pending applications for recruiters"""
+    try:
+        if not supabase_client.is_connected():
+            return jsonify({"error": "Database not connected"}), 500
+        
+        import asyncio
+        applications = asyncio.run(supabase_client.get_pending_applications())
+        
+        return jsonify({
+            "applications": applications,
+            "total": len(applications)
+        })
+        
+    except Exception as e:
+        print(f"❌ Error fetching applications: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/recruiter/application/<application_id>/review', methods=['POST'])
+def review_application(application_id):
+    """Review an application (accept/reject with feedback)"""
+    try:
+        data = request.get_json()
+        decision = data.get('decision')  # 'accepted' or 'rejected'
+        feedback_text = data.get('feedback_text', '')
+        strengths = data.get('strengths', [])
+        areas_for_improvement = data.get('areas_for_improvement', [])
+        skill_gaps = data.get('skill_gaps', [])
+        recommendation_score = data.get('recommendation_score')
+        recruiter_id = data.get('recruiter_id', 'recruiter-001')  # Default recruiter ID
+        
+        if decision not in ['accepted', 'rejected']:
+            return jsonify({"error": "Invalid decision. Must be 'accepted' or 'rejected'"}), 400
+        
+        if not supabase_client.is_connected():
+            return jsonify({"error": "Database not connected"}), 500
+        
+        import asyncio
+        
+        # Update application status
+        success = asyncio.run(supabase_client.update_application_status(
+            application_id, decision, recruiter_id
+        ))
+        
+        if not success:
+            return jsonify({"error": "Failed to update application status"}), 500
+        
+        # Create feedback
+        feedback_data = {
+            "application_id": application_id,
+            "recruiter_id": recruiter_id,
+            "decision": decision,
+            "feedback_text": feedback_text,
+            "strengths": strengths,
+            "areas_for_improvement": areas_for_improvement,
+            "skill_gaps": skill_gaps,
+            "recommendation_score": recommendation_score
+        }
+        
+        feedback_result = asyncio.run(supabase_client.create_feedback(feedback_data))
+        
+        if feedback_result:
+            # Process feedback through reinforcement learning system
+            asyncio.run(rl_system.process_feedback(feedback_data))
+            
+            print(f"✅ Application {application_id} reviewed as {decision}")
+            return jsonify({
+                "message": f"Application {decision} successfully",
+                "application_id": application_id,
+                "decision": decision,
+                "feedback_id": feedback_result.get('id')
+            })
+        else:
+            return jsonify({"error": "Failed to create feedback"}), 500
+        
+    except Exception as e:
+        print(f"❌ Error reviewing application: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/candidate/applications/<candidate_id>', methods=['GET'])
+def get_candidate_applications(candidate_id):
+    """Get all applications for a specific candidate"""
+    try:
+        if not supabase_client.is_connected():
+            return jsonify({"error": "Database not connected"}), 500
+        
+        import asyncio
+        applications = asyncio.run(supabase_client.get_applications_by_candidate(candidate_id))
+        
+        return jsonify({
+            "applications": applications,
+            "total": len(applications)
+        })
+        
+    except Exception as e:
+        print(f"❌ Error fetching candidate applications: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/candidate/feedback/<application_id>', methods=['GET'])
+def get_application_feedback(application_id):
+    """Get feedback for a specific application"""
+    try:
+        if not supabase_client.is_connected():
+            return jsonify({"error": "Database not connected"}), 500
+        
+        import asyncio
+        feedback = asyncio.run(supabase_client.get_feedback_for_application(application_id))
+        
+        if not feedback:
+            return jsonify({"error": "No feedback found for this application"}), 404
+        
+        return jsonify({"feedback": feedback})
+        
+    except Exception as e:
+        print(f"❌ Error fetching feedback: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/recruiter/dashboard', methods=['GET'])
+def get_recruiter_dashboard():
+    """Get recruiter dashboard data"""
+    try:
+        if not supabase_client.is_connected():
+            return jsonify({"error": "Database not connected"}), 500
+        
+        import asyncio
+        dashboard_data = asyncio.run(supabase_client.get_recruiter_dashboard_data())
+        
+        return jsonify(dashboard_data)
+        
+    except Exception as e:
+        print(f"❌ Error fetching dashboard data: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/improved-recommendations', methods=['POST'])
+def get_improved_recommendations():
+    """Get improved recommendations using reinforcement learning"""
+    try:
+        candidate_data = request.get_json()
+        
+        if not candidate_data:
+            return jsonify({"error": "No candidate data provided"}), 400
+        
+        print(f"🤖 Getting improved recommendations for: {candidate_data.get('name', 'Unknown')}")
+        
+        # Get improved recommendations using RL system
+        import asyncio
+        improved_recommendations = asyncio.run(rl_system.get_improved_recommendations(
+            candidate_data, internships_data, num_recommendations=5
+        ))
+        
+        if not improved_recommendations:
+            # Fallback to regular recommendations
+            recommendations = get_recommendations(candidate_data)
+            return jsonify({
+                "recommendations": recommendations,
+                "method": "RAG_AI_System_Fallback",
+                "learning_applied": False
+            })
+        
+        # Format recommendations
+        formatted_recommendations = []
+        for i, rec in enumerate(improved_recommendations):
+            formatted_rec = {
+                "rank": i + 1,
+                "company": rec.get('company', ''),
+                "title": rec.get('title', ''),
+                "match_score": int(rec.get('improved_score', 0) * 100),
+                "reasoning": f"AI-optimized recommendation based on learning from feedback (Score: {rec.get('improved_score', 0):.2f})",
+                "skills_to_highlight": rec.get('learning_insights', {}).get('strengths_to_highlight', []),
+                "location": rec.get('location', ''),
+                "sector": rec.get('sector', ''),
+                "opportunities_available": rec.get('opportunities', 1),
+                "learning_insights": rec.get('learning_insights', {}),
+                "confidence_level": rec.get('learning_insights', {}).get('confidence_level', 'medium')
+            }
+            formatted_recommendations.append(formatted_rec)
+        
+        print(f"✅ Generated {len(formatted_recommendations)} improved recommendations")
+        
+        return jsonify({
+            "recommendations": formatted_recommendations,
+            "method": "Reinforcement_Learning_Enhanced",
+            "learning_applied": True,
+            "total_analyzed": len(internships_data)
+        })
+        
+    except Exception as e:
+        print(f"❌ Error getting improved recommendations: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/learning-summary/<candidate_id>', methods=['GET'])
+def get_learning_summary(candidate_id):
+    """Get learning summary for a candidate"""
+    try:
+        import asyncio
+        summary = asyncio.run(rl_system.get_learning_summary(candidate_id))
+        
+        return jsonify({
+            "candidate_id": candidate_id,
+            "learning_summary": summary
+        })
+        
+    except Exception as e:
+        print(f"❌ Error getting learning summary: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/candidate/feedback-history/<candidate_id>', methods=['GET'])
+def get_candidate_feedback_history(candidate_id):
+    """Get feedback history for a candidate"""
+    try:
+        if not supabase_client.is_connected():
+            return jsonify({"error": "Database not connected"}), 500
+        
+        import asyncio
+        feedback_history = asyncio.run(supabase_client.get_candidate_feedback_history(candidate_id))
+        
+        return jsonify({
+            "candidate_id": candidate_id,
+            "feedback_history": feedback_history,
+            "total_feedback": len(feedback_history)
+        })
+        
+    except Exception as e:
+        print(f"❌ Error fetching feedback history: {e}")
         return jsonify({"error": str(e)}), 500
 
 def main():

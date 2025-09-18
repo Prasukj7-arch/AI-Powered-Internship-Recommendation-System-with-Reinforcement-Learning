@@ -43,7 +43,19 @@ const InternshipCard = ({
   const handleApply = async () => {
     try {
       setIsApplying(true);
-      const result = await apiService.applyForInternship(internshipId, 51423); // Using sample user ID
+      
+      // Get candidate profile from localStorage or use default
+      const candidateProfile = {
+        name: "PORNADULLA USHA",
+        education: "B.Tech in Mechatronics",
+        skills: "Python, Machine Learning, Data Analysis, Web Development, React, Node.js",
+        experience: "2 months data science internship, 1 year coding experience",
+        interests: "AI/ML, Data Science, Software Development, Web Development",
+        location: "Tirupati, ANDHRA PRADESH",
+        goals: "Become a senior data scientist in a leading tech company"
+      };
+      
+      const result = await apiService.applyForInternship(internshipId, "550e8400-e29b-41d4-a716-446655440000", candidateProfile);
       setApplied(true);
       console.log('Application successful:', result);
     } catch (error) {

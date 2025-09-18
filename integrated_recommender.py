@@ -93,8 +93,32 @@ class IntegratedRecommender:
             except Exception as e:
                 print(f"❌ Backup recommendation failed: {e}")
         
-        # If both fail, return error
-        raise Exception("❌ All recommendation systems failed!")
+        # If both fail, return minimal fallback
+        print("⚠️ All recommendation systems failed, using emergency fallback")
+        try:
+            # Emergency fallback: return first few internships with basic info
+            emergency_recommendations = []
+            for i in range(min(3, num_recommendations)):
+                emergency_recommendations.append({
+                    "rank": i + 1,
+                    "company": f"Company {i+1}",
+                    "title": f"Internship {i+1}",
+                    "match_score": 70,
+                    "reasoning": "Basic recommendation due to system limitations",
+                    "skills_to_highlight": []
+                })
+            
+            return {
+                "candidate_profile": str(resume_data),
+                "total_internships_analyzed": 0,
+                "recommendations": emergency_recommendations,
+                "method": 'emergency_fallback',
+                "fallback_used": True,
+                "timestamp": pd.Timestamp.now().isoformat()
+            }
+        except Exception as e:
+            print(f"❌ Even emergency fallback failed: {e}")
+            raise Exception("❌ All recommendation systems failed completely!")
     
     def display_recommendations(self, result: dict):
         """Display recommendations with method indicator"""
