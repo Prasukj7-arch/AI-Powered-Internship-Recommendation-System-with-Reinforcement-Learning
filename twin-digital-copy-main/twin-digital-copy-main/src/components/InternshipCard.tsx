@@ -16,6 +16,8 @@ interface InternshipCardProps {
   candidatesApplied: number;
   tag?: string;
   recommendation?: number;
+  reasoning?: string;
+  skills_to_highlight?: string[];
   onIncreaseMatch?: () => void;
 }
 
@@ -31,6 +33,8 @@ const InternshipCard = ({
   candidatesApplied,
   tag,
   recommendation,
+  reasoning,
+  skills_to_highlight,
   onIncreaseMatch
 }: InternshipCardProps) => {
   const [isApplying, setIsApplying] = useState(false);
@@ -110,6 +114,26 @@ const InternshipCard = ({
           <div className="font-medium">{candidatesApplied}</div>
         </div>
       </div>
+
+      {/* RAG Recommendation Details */}
+      {recommendation && reasoning && (
+        <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
+          <div className="text-sm">
+            <div className="font-medium text-green-800 mb-2">🤖 AI Recommendation</div>
+            <div className="text-green-700 mb-2">{reasoning}</div>
+            {skills_to_highlight && skills_to_highlight.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                <span className="text-xs text-green-600 font-medium">Skills to highlight:</span>
+                {skills_to_highlight.map((skill, index) => (
+                  <Badge key={index} variant="secondary" className="text-xs bg-green-100 text-green-800">
+                    {skill}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Action Buttons */}
       <div className={`flex gap-2 pt-2 ${recommendation ? 'grid grid-cols-3' : ''}`}>

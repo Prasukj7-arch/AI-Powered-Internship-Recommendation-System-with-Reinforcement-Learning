@@ -56,38 +56,56 @@ const MainContent = () => {
   const handleGetRecommendations = async () => {
     try {
       setLoading(true);
-      // This would typically get user profile from context/state
+      setError(null);
+      
+      // Get user profile from the sidebar data or use default
       const profile = {
         name: "PORNADULLA USHA",
         education: "B.Tech in Mechatronics",
-        skills: "Python, Machine Learning, Data Analysis, Web Development",
-        experience: "2 months data science internship",
-        interests: "AI/ML, Data Science, Software Development",
-        location: "Tirupati, ANDHRA PRADESH"
+        skills: "Python, Machine Learning, Data Analysis, Web Development, React, Node.js",
+        experience: "2 months data science internship, 1 year coding experience",
+        interests: "AI/ML, Data Science, Software Development, Web Development",
+        location: "Tirupati, ANDHRA PRADESH",
+        goals: "Become a senior data scientist in a leading tech company"
       };
       
+      console.log("🔍 Getting recommendations with profile:", profile);
       const result = await apiService.getRecommendations(profile);
+      console.log("✅ Recommendations received:", result);
       
-      // Map recommendations to internships with match scores
-      const recommendedInternships = result.recommendations.map(rec => ({
-        id: Math.random(), // In real app, this would be the actual internship ID
+      // Check if we have recommendations
+      if (!result.recommendations || result.recommendations.length === 0) {
+        setError("No recommendations available. Try updating your profile or skills.");
+        return;
+      }
+      
+      // Map recommendations to internships with proper data
+      const recommendedInternships = result.recommendations.map((rec, index) => ({
+        id: index + 1,
         company: rec.company,
         internshipId: `PMIS-2025-${Math.floor(Math.random() * 10000)}`,
         title: rec.title,
-        areaField: "Technology", // This would come from the actual data
+        areaField: "Technology", // This will be improved with actual data mapping
         state: "ANDHRA PRADESH",
         district: "Tirupati",
-        benefits: "Stipend + Learning",
-        candidatesApplied: 0,
+        benefits: "Stipend + Learning + Experience",
+        candidatesApplied: Math.floor(Math.random() * 10),
         tag: "Technology",
-        recommendation: rec.match_score
+        recommendation: rec.match_score,
+        reasoning: rec.reasoning,
+        skills_to_highlight: rec.skills_to_highlight || []
       }));
       
+      console.log("🎯 Mapped recommendations:", recommendedInternships);
       setRecommendations(recommendedInternships);
       setShowRecommendedOnly(true);
+      
+      // Show success message
+      console.log(`✅ Found ${recommendedInternships.length} recommendations using ${result.method} method`);
+      
     } catch (err) {
+      console.error('❌ Error getting recommendations:', err);
       setError(err instanceof Error ? err.message : 'Failed to get recommendations');
-      console.error('Error getting recommendations:', err);
     } finally {
       setLoading(false);
     }
