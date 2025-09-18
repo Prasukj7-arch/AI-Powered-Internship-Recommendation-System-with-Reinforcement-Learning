@@ -82,7 +82,7 @@ const InternshipCard = ({
 
       {/* Internship Details */}
       <div className="space-y-2 text-sm">
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
           <div>
             <span className="text-muted-foreground">Internship ID</span>
             <div className="font-medium text-orange-600">{internshipId}</div>
@@ -136,7 +136,7 @@ const InternshipCard = ({
       )}
 
       {/* Action Buttons */}
-      <div className={`flex gap-2 pt-2 ${recommendation ? 'grid grid-cols-3' : ''}`}>
+      <div className={`flex flex-col sm:flex-row gap-2 pt-2 ${recommendation ? 'sm:grid sm:grid-cols-3' : ''}`}>
         <Button variant="outline" size="sm" className="flex-1 bg-blue-600 text-white hover:bg-blue-700">
           View
         </Button>

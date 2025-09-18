@@ -5,7 +5,7 @@ import { MapPin, User, Lock, LogOut, AlertTriangle, Edit } from "lucide-react";
 
 const Sidebar = () => {
   return (
-    <div className="w-80 bg-white border-r border-border p-4 space-y-4">
+    <div className="w-full lg:w-80 bg-white border-r border-border p-4 space-y-4">
       {/* Candidate ID */}
       <div className="bg-orange-100 text-orange-800 px-3 py-1 rounded text-sm font-medium flex items-center gap-2">
         <Edit className="w-4 h-4" />
@@ -19,7 +19,7 @@ const Sidebar = () => {
             <AvatarFallback className="text-lg">DU</AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="font-semibold">PORNADULLA USHA</h3>
+            <h3 className="font-semibold">PORNADULLA OM</h3>
             <p className="text-sm text-muted-foreground">19 Yrs</p>
             <p className="text-sm text-muted-foreground">B.Tech in Mechatronics</p>
           </div>

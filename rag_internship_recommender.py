@@ -225,6 +225,27 @@ class InternshipRecommender:
                 # Clean the response to extract JSON
                 response_clean = response.strip()
                 
+                # Remove common LLM response prefixes and suffixes more aggressively
+                prefixes_to_remove = ['<s>', '[ASSISTANT]', '[/INST]', '[OUT]', '```json', '```', 'Assistant:', 'User:']
+                for prefix in prefixes_to_remove:
+                    if response_clean.startswith(prefix):
+                        response_clean = response_clean[len(prefix):].strip()
+                
+                # Remove common LLM response suffixes
+                suffixes_to_remove = ['</s>', '```', '[/ASSISTANT]', 'Assistant:', 'User:']
+                for suffix in suffixes_to_remove:
+                    if response_clean.endswith(suffix):
+                        response_clean = response_clean[:-len(suffix)].strip()
+                
+                # Remove any remaining markdown code blocks
+                if response_clean.startswith('```'):
+                    response_clean = response_clean[3:]
+                if response_clean.endswith('```'):
+                    response_clean = response_clean[:-3]
+                
+                # Clean up any extra whitespace
+                response_clean = response_clean.strip()
+                
                 # Try to find JSON array in the response
                 if response_clean.startswith('[') and response_clean.endswith(']'):
                     recommendations = json.loads(response_clean)

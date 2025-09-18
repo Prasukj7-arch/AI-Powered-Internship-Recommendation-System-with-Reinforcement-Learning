@@ -28,7 +28,7 @@ const NotificationPanel = () => {
   ];
 
   return (
-    <div className="w-80 bg-white border-l border-border p-4">
+    <div className="w-full lg:w-80 bg-white border-l border-border p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">

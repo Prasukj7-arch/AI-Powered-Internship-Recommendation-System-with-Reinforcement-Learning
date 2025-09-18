@@ -10,3 +10,5 @@ chromadb>=0.4.15
 ollama>=0.1.7
 pdfplumber>=0.10.3
 docx2txt>=0.8
+supabase>=2.0.0
+postgrest>=0.13.0

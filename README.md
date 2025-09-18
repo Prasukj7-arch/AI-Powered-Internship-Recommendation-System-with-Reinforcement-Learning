@@ -1,226 +1,105 @@
-# 🚀 PM Internship Recommendation System
+# PM Internship Recommendation System
 
-A full-stack application combining React frontend with Python Flask backend featuring RAG (Retrieval-Augmented Generation) for intelligent internship recommendations. Built for the PM Internship Scheme hackathon.
+A fully functional AI-powered internship recommendation system with RAG (Retrieval-Augmented Generation) technology.
 
-## ⚡ Quick Start (For New Users)
+## 🚀 Features
 
-### Option 1: Automated Setup (Recommended)
+- **AI-Powered Recommendations**: Uses OpenRouter API with Mistral-7B model
+- **RAG System**: Intelligent matching based on skills, interests, and profile
+- **Responsive Design**: Works perfectly on mobile, tablet, and desktop
+- **Real-time Search**: Filter internships by location, sector, and skills
+- **Smart Fallback**: TF-IDF backup system if AI fails
+
+## 🛠️ Tech Stack
+
+- **Backend**: Python, Flask, RAG, OpenRouter API
+- **Frontend**: React, TypeScript, Tailwind CSS, Shadcn/ui
+- **AI**: Mistral-7B via OpenRouter API
+- **Data**: CSV-based internship database
+
+## 📦 Quick Start
+
+### 1. Setup Environment
 ```bash
-# Clone the repository
-git clone <your-github-repo-url>
-cd SIH_2025
+# Create virtual environment
+python -m venv venv
 
-# Run the automated setup script
-python setup_complete.py
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# Mac/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-### Option 2: Manual Setup
+### 2. Configure API Keys
 ```bash
-# 1. Clone and navigate
-git clone <your-github-repo-url>
-cd SIH_2025
+# Copy environment template
+copy env.example .env
 
-# 2. Create virtual environment
-python -m venv venv
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # macOS/Linux
+# Edit .env file with your OpenRouter API key
+OPENROUTER_API_KEY=your_api_key_here
+```
 
-# 3. Install Python dependencies
-pip install -r requirements_rag.txt
-
-# 4. Install and build frontend
+### 3. Build Frontend
+```bash
 cd twin-digital-copy-main/twin-digital-copy-main
 npm install
 npm run build
 cd ../..
-
-# 5. Set up environment
-copy env.example .env  # Windows
-# cp env.example .env  # macOS/Linux
-# Edit .env and add your OpenRouter API key
-
-# 6. Run the application
-python app_with_rag.py
 ```
 
-**Open your browser to: http://localhost:5000**
-
-## 📖 Detailed Setup Guide
-
-For comprehensive setup instructions, troubleshooting, and development guide, see [SETUP_GUIDE.md](SETUP_GUIDE.md).
-
-## 🎯 Features
-
-### Frontend (React + TypeScript)
-- ✅ Modern, responsive UI with Tailwind CSS
-- ✅ Real-time search and filtering
-- ✅ AI-powered recommendations
-- ✅ Application tracking
-- ✅ Beautiful internship cards
-
-### Backend (Python Flask + RAG)
-- ✅ RAG-based recommendation system
-- ✅ OpenRouter API integration (Mistral-7B)
-- ✅ ChromaDB vector storage
-- ✅ TF-IDF fallback system
-- ✅ RESTful API endpoints
-
-## 📁 Project Structure
-
-### Core Files
-- `integrated_recommender.py` - **Main integrated system (recommended)**
-- `rag_internship_recommender.py` - Primary recommendation engine (OpenRouter API)
-- `simple_backup_recommender.py` - Backup system (TF-IDF only)
-- `backup_recommender.py` - Advanced backup system (ChromaDB + Ollama)
-- `web_interface.py` - Flask web interface with integrated system
-- `config.py` - Configuration settings and API key management
-
-### Data & Documentation
-- `internships_all_streams_edited.csv` - Dataset (200 internships)
-- `internship_recommender.ipynb` - Jupyter notebook with backup implementation
-- `requirements.txt` - Python dependencies
-- `README.md` - This documentation
-
-### Git Configuration
-- `.gitignore` - Git ignore rules
-- `.gitattributes` - Git attributes
-
-## 🎯 Features
-
-### 🤖 AI-Powered Recommendations
-- **Primary System**: OpenRouter API with Mistral-7B for intelligent matching
-- **Smart Reasoning**: Detailed explanations for each recommendation
-- **Realistic Scoring**: Match scores in percentage (75-95%)
-- **Professional Output**: Skills highlighting and career alignment
-
-### 🔄 Bulletproof Fallback System
-- **Automatic Failover**: Seamlessly switches to backup when API fails
-- **TF-IDF Backup**: Reliable similarity matching without external dependencies
-- **ChromaDB Option**: Advanced vector-based backup (optional)
-- **Always Works**: System never fails, always provides recommendations
-
-### 🌐 User-Friendly Interface
-- **Web Interface**: Modern Flask-based UI at http://localhost:5000
-- **Real-time Status**: Live monitoring of primary and backup systems
-- **Mobile Compatible**: Responsive design for all devices
-- **Form-based Input**: Easy candidate profile entry
-
-### 📊 Comprehensive Analysis
-- **200 Internships**: Real PM Internship Scheme data
-- **Multi-factor Matching**: Skills, education, location, interests, goals
-- **Detailed Profiles**: Enhanced candidate analysis
-- **Sector Coverage**: All streams and specializations
-
-## 📊 Dataset
-
-The system uses `internships_all_streams_edited.csv` with 200 real internship opportunities including:
-
-- **Companies**: Apple, Microsoft, TCS, Wipro, Infosys, and more
-- **Sectors**: Technology, Healthcare, Finance, Manufacturing, Research
-- **Locations**: Pan-India coverage including rural and urban areas
-- **Specializations**: Data Science, Software Development, Marketing, Research
-- **Requirements**: Detailed qualifications, skills, and benefits
-
-## 🔧 Usage
-
-### Command Line Interface
-```python
-from integrated_recommender import IntegratedRecommender
-
-# Initialize integrated system
-recommender = IntegratedRecommender("internships_all_streams_edited.csv")
-
-# Enhanced candidate profile
-candidate = {
-    "name": "Priya Sharma",
-    "education": "B.Tech Computer Science Engineering, 2024 - 8.5 CGPA",
-    "skills": "Python, Machine Learning, TensorFlow, Data Analysis, SQL, Tableau, Web Development, JavaScript, React, Communication, Teamwork",
-    "experience": "2 months data science internship at TechCorp, 1 year coding experience with personal projects, 6 months freelance web development",
-    "interests": "Artificial Intelligence, Machine Learning, Data Science, Software Development, Fintech, Healthcare Technology",
-    "location_preference": "Bangalore, Pune, Delhi, Mumbai, Hyderabad",
-    "career_goals": "Become a senior data scientist in a leading tech company, work on AI/ML products that impact millions of users",
-    "certifications": "Google Data Analytics Certificate, AWS Cloud Practitioner",
-    "projects": "Built ML model for stock prediction, Developed e-commerce website, Created data visualization dashboard"
-}
-
-# Get recommendations
-result = recommender.recommend_internships(candidate)
-recommender.display_recommendations(result)
-```
-
-### Web Interface
-1. Run: `python web_interface.py`
-2. Open: http://localhost:5000
-3. Fill in candidate details
-4. Get instant AI-powered recommendations
-5. View system status and method used
-
-### System Status API
+### 4. Run Application
 ```bash
-# Check system health
-curl http://localhost:5000/system-status
+python app.py
 ```
 
-## 🏗️ Architecture
+### 5. Access Application
+- **Frontend**: http://localhost:5000
+- **API**: http://localhost:5000/api/
 
-### Primary System (OpenRouter API)
-- **Model**: Mistral-7B-Instruct
-- **Features**: AI reasoning, detailed explanations, intelligent matching
-- **Output**: JSON-formatted recommendations with reasoning
+## 🎯 How to Use
 
-### Backup System (TF-IDF)
-- **Method**: Term Frequency-Inverse Document Frequency
-- **Features**: Fast similarity matching, no external dependencies
-- **Reliability**: Always works, provides good quality recommendations
+1. **Browse Internships**: View all available internships with filters
+2. **Get AI Recommendations**: Click "Your top recommendations" for personalized suggestions
+3. **Apply**: Click "Apply" on any internship you're interested in
+4. **Search**: Use the search bar to find specific internships
 
-### Integration Layer
-- **Automatic Fallback**: Primary → Backup when API fails
-- **Status Monitoring**: Real-time system health checks
-- **Error Handling**: Graceful degradation and recovery
+## 📱 Responsive Design
 
-## 🎉 Hackathon Ready!
+- **Mobile**: Single column layout, touch-friendly buttons
+- **Tablet**: 2-column grids, optimized spacing
+- **Desktop**: Full multi-column layout with all features
 
-### ✅ What's Included
-- **Complete RAG System**: Primary + Backup recommenders
-- **Web Interface**: Professional Flask app with status monitoring
-- **AI Integration**: OpenRouter API with Mistral-7B
-- **Fallback System**: TF-IDF for reliability
-- **Professional Output**: Realistic scores and detailed reasoning
-- **200 Internships**: Real PM Internship Scheme data
-- **Mobile Compatible**: Responsive design for all devices
+## 🔧 API Endpoints
 
-### 🚀 Demo Ready
-- **Command Line**: `python integrated_recommender.py`
-- **Web Interface**: `python web_interface.py` → http://localhost:5000
-- **System Status**: Real-time monitoring of all components
-- **Professional Output**: Match scores, reasoning, skills highlighting
+- `GET /api/internships` - Get internships with filters
+- `POST /api/recommend` - Get AI recommendations
+- `POST /api/apply` - Apply for internship
+- `GET /api/health` - Health check
+- `GET /api/system-status` - System status
 
-### 📱 Perfect for PM Internship Scheme
-- **Target Audience**: First-generation learners, rural candidates
-- **User-Friendly**: Simple form-based input
-- **Comprehensive**: Covers all streams and specializations
-- **Reliable**: Never fails, always provides recommendations
-- **Scalable**: Can handle multiple candidates and internships
+## 📊 Data Source
 
-## 🔧 Technical Stack
+The system uses `internships_all_streams_edited.csv` containing 200+ internship opportunities across various sectors and locations.
 
-- **Python 3.13+**
-- **Flask** - Web framework
-- **OpenRouter API** - LLM access
-- **Mistral-7B** - AI model
-- **TF-IDF** - Similarity matching
-- **Pandas** - Data processing
-- **ChromaDB** - Vector database (optional)
-- **Ollama** - Local LLM (optional)
+## 🤖 AI Recommendation System
 
-## 📈 Performance
+The RAG system analyzes:
+- **Skills**: Python, Machine Learning, Web Development, etc.
+- **Interests**: AI/ML, Data Science, Technology, etc.
+- **Location**: State and district preferences
+- **Education**: Qualification level matching
+- **Experience**: Previous internships and projects
 
-- **Response Time**: < 5 seconds for recommendations
-- **Accuracy**: High-quality AI-powered matching
-- **Reliability**: 100% uptime with fallback system
-- **Scalability**: Handles 200+ internships efficiently
-- **User Experience**: Intuitive and professional interface
+## 🎉 Success!
 
----
+Your PM Internship Recommendation System is now:
+- ✅ Fully functional with AI recommendations
+- ✅ Responsive across all devices
+- ✅ Clean and organized codebase
+- ✅ Ready for production use
 
-**Your RAG-based internship recommendation system is ready for the PM Internship Scheme hackathon!** 🎯
+**Happy interning!** 🎓

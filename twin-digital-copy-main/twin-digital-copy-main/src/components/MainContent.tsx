@@ -79,22 +79,48 @@ const MainContent = () => {
         return;
       }
       
-      // Map recommendations to internships with proper data
-      const recommendedInternships = result.recommendations.map((rec, index) => ({
-        id: index + 1,
-        company: rec.company,
-        internshipId: `PMIS-2025-${Math.floor(Math.random() * 10000)}`,
-        title: rec.title,
-        areaField: "Technology", // This will be improved with actual data mapping
-        state: "ANDHRA PRADESH",
-        district: "Tirupati",
-        benefits: "Stipend + Learning + Experience",
-        candidatesApplied: Math.floor(Math.random() * 10),
-        tag: "Technology",
-        recommendation: rec.match_score,
-        reasoning: rec.reasoning,
-        skills_to_highlight: rec.skills_to_highlight || []
-      }));
+      // Map recommendations to actual internship data
+      const recommendedInternships = result.recommendations.map((rec, index) => {
+        // Find matching internship in the current internships list
+        // Use a more flexible matching approach that's case-insensitive and handles partial matches
+        const matchingInternship = internships.find(internship => {
+          // Convert to lowercase for case-insensitive comparison
+          const companyMatch = internship.company.toLowerCase().includes(rec.company.toLowerCase()) || 
+                              rec.company.toLowerCase().includes(internship.company.toLowerCase());
+          const titleMatch = internship.title.toLowerCase().includes(rec.title.toLowerCase()) || 
+                            rec.title.toLowerCase().includes(internship.title.toLowerCase());
+          return companyMatch && titleMatch;
+        });
+        
+        // If we found a matching internship, use its data, otherwise create a new one
+        if (matchingInternship) {
+          console.log(`✅ Found matching internship for ${rec.company} - ${rec.title}`);
+          return {
+            ...matchingInternship,
+            recommendation: rec.match_score,
+            reasoning: rec.reasoning,
+            skills_to_highlight: rec.skills_to_highlight || []
+          };
+        } else {
+          // Create a new internship entry with the recommendation data
+          console.log(`⚠️ No matching internship found for ${rec.company} - ${rec.title}. Creating new entry.`);
+          return {
+            id: index + 1,
+            company: rec.company,
+            internshipId: `PMIS-2025-${Math.floor(Math.random() * 10000)}`,
+            title: rec.title,
+            areaField: rec.sector || "Technology",
+            state: rec.location || "ANDHRA PRADESH",
+            district: "Tirupati",
+            benefits: "Stipend + Learning + Experience",
+            candidatesApplied: Math.floor(Math.random() * 10),
+            tag: rec.sector || "Technology",
+            recommendation: rec.match_score,
+            reasoning: rec.reasoning,
+            skills_to_highlight: rec.skills_to_highlight || []
+          };
+        }
+      });
       
       console.log("🎯 Mapped recommendations:", recommendedInternships);
       setRecommendations(recommendedInternships);
@@ -134,7 +160,7 @@ const MainContent = () => {
 
           {/* Filters or Ranking Preferences */}
           {!showRecommendedOnly ? (
-            <div className="grid grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
               <Select value={filters.state || ''} onValueChange={(value) => handleFilterChange('state', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select State" />
@@ -216,7 +242,7 @@ const MainContent = () => {
           )}
 
           {/* Filter by radius and search */}
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-orange-500" />
               <span className="text-sm font-medium">Filter by radius</span>
@@ -224,29 +250,31 @@ const MainContent = () => {
             <div className="flex-1 max-w-md">
               <Input placeholder="Enter kms" className="w-full" />
             </div>
-            <Button 
-              className="bg-orange-500 hover:bg-orange-600 text-white px-6"
-              onClick={showRecommendedOnly ? () => setShowRecommendedOnly(false) : handleGetRecommendations}
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Loading...
-                </>
-              ) : showRecommendedOnly ? 'Show All' : 'Your top recommendations'}
-            </Button>
-            <div className="flex gap-2">
-              <Input 
-                placeholder="Search..." 
-                className="max-w-xs" 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-              />
-              <Button onClick={handleSearch} variant="outline">
-                <Search className="w-4 h-4" />
+            <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+              <Button 
+                className="bg-orange-500 hover:bg-orange-600 text-white px-6 w-full sm:w-auto"
+                onClick={showRecommendedOnly ? () => setShowRecommendedOnly(false) : handleGetRecommendations}
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Loading...
+                  </>
+                ) : showRecommendedOnly ? 'Show All' : 'Your top recommendations'}
               </Button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Input 
+                  placeholder="Search..." 
+                  className="flex-1 sm:max-w-xs" 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                />
+                <Button onClick={handleSearch} variant="outline" className="px-3">
+                  <Search className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -269,7 +297,7 @@ const MainContent = () => {
 
           {/* Internship Cards Grid */}
           {!loading && (
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {(showRecommendedOnly ? recommendations : internships)
                 .filter(internship => !showRecommendedOnly || internship.recommendation)
                 .map((internship, index) => (

@@ -5,7 +5,7 @@ import { Bell, Settings, HelpCircle, FileText, Video, Building2 } from "lucide-r
 const Header = () => {
   return (
     <header className="bg-white border-b border-border px-4 py-2">
-      <div className="flex items-center justify-between max-w-full">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between max-w-full gap-4">
         {/* Left side - Ministry logo */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
@@ -30,7 +30,7 @@ const Header = () => {
         </div>
 
         {/* Center navigation */}
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center gap-2 lg:gap-6">
           <Button variant="ghost" size="sm" className="text-sm">
             <HelpCircle className="w-4 h-4 mr-1" />
             FAQs
@@ -54,7 +54,7 @@ const Header = () => {
         </div>
 
         {/* Right side */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 lg:gap-3">
           <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
             Admin Portal
           </Button>
