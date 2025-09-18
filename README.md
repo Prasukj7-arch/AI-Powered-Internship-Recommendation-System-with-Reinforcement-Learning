@@ -1,41 +1,69 @@
-# RAG Internship Recommendation System
+# 🚀 PM Internship Recommendation System
 
-AI-powered internship recommendation engine with integrated fallback system. Uses OpenRouter API (Mistral-7B) as primary method and TF-IDF similarity as backup when API limits are reached. Built for the PM Internship Scheme hackathon.
+A full-stack application combining React frontend with Python Flask backend featuring RAG (Retrieval-Augmented Generation) for intelligent internship recommendations. Built for the PM Internship Scheme hackathon.
 
-## 🚀 Quick Start
+## ⚡ Quick Start (For New Users)
 
-### 1. Install Dependencies
+### Option 1: Automated Setup (Recommended)
 ```bash
-pip install -r requirements.txt
+# Clone the repository
+git clone <your-github-repo-url>
+cd SIH_2025
+
+# Run the automated setup script
+python setup_complete.py
 ```
 
-### 2. Set API Key
+### Option 2: Manual Setup
 ```bash
-# Set your OpenRouter API key
-set OPENROUTER_API_KEY=your_api_key_here
+# 1. Clone and navigate
+git clone <your-github-repo-url>
+cd SIH_2025
+
+# 2. Create virtual environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # macOS/Linux
+
+# 3. Install Python dependencies
+pip install -r requirements_rag.txt
+
+# 4. Install and build frontend
+cd twin-digital-copy-main/twin-digital-copy-main
+npm install
+npm run build
+cd ../..
+
+# 5. Set up environment
+copy env.example .env  # Windows
+# cp env.example .env  # macOS/Linux
+# Edit .env and add your OpenRouter API key
+
+# 6. Run the application
+python app_with_rag.py
 ```
 
-### 3. Run the System
+**Open your browser to: http://localhost:5000**
 
-**Integrated System (Recommended):**
-```bash
-python integrated_recommender.py
-```
+## 📖 Detailed Setup Guide
 
-**Web Interface:**
-```bash
-python web_interface.py
-# Then open: http://localhost:5000
-```
+For comprehensive setup instructions, troubleshooting, and development guide, see [SETUP_GUIDE.md](SETUP_GUIDE.md).
 
-**Individual Systems:**
-```bash
-# Primary system only
-python rag_internship_recommender.py
+## 🎯 Features
 
-# Backup system only
-python simple_backup_recommender.py
-```
+### Frontend (React + TypeScript)
+- ✅ Modern, responsive UI with Tailwind CSS
+- ✅ Real-time search and filtering
+- ✅ AI-powered recommendations
+- ✅ Application tracking
+- ✅ Beautiful internship cards
+
+### Backend (Python Flask + RAG)
+- ✅ RAG-based recommendation system
+- ✅ OpenRouter API integration (Mistral-7B)
+- ✅ ChromaDB vector storage
+- ✅ TF-IDF fallback system
+- ✅ RESTful API endpoints
 
 ## 📁 Project Structure
 
