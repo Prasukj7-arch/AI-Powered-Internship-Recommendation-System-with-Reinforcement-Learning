@@ -14,7 +14,7 @@ OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "mistralai/mistral-7b-instruct:
 
 # System Configuration
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
-PORT = int(os.getenv("PORT", "5000"))
+PORT = int(os.getenv("PORT", "8000"))
 
 # File paths
 CSV_FILE_PATH = "internships_all_streams_edited.csv"

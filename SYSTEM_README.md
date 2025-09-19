@@ -5,6 +5,7 @@ A comprehensive internship recommendation system that uses AI-powered recommenda
 ## 🚀 Features
 
 ### For Candidates
+
 - **AI-Powered Recommendations**: Get personalized internship recommendations using RAG (Retrieval-Augmented Generation)
 - **Apply Functionality**: Apply to internships with one click
 - **Feedback Learning**: View detailed feedback from recruiters and learn from rejections
@@ -12,12 +13,14 @@ A comprehensive internship recommendation system that uses AI-powered recommenda
 - **Learning Dashboard**: Track your progress and skill improvements over time
 
 ### For Recruiters
+
 - **Application Management**: Review and manage all internship applications
 - **Feedback System**: Provide detailed feedback with strengths, areas for improvement, and skill gaps
 - **Analytics Dashboard**: View application statistics and trends
 - **Decision Tracking**: Accept or reject applications with comprehensive feedback
 
 ### AI & Learning System
+
 - **Reinforcement Learning**: System learns from recruiter feedback to improve future recommendations
 - **Skill Gap Analysis**: Identifies common skill gaps and suggests improvements
 - **Recommendation Optimization**: Continuously improves recommendation accuracy based on feedback
@@ -49,6 +52,7 @@ Database (Supabase PostgreSQL)
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
+
 - Python 3.8+
 - Node.js 16+
 - Supabase account
@@ -98,7 +102,7 @@ npm run build
 # Start the Flask backend
 python app.py
 
-# The application will be available at http://localhost:5000
+# The application will be available at http://localhost:8000
 ```
 
 ## 📊 Database Schema
@@ -131,6 +135,7 @@ python app.py
 ## 🎯 API Endpoints
 
 ### Candidate Endpoints
+
 - `POST /api/apply` - Apply for an internship
 - `POST /api/recommend` - Get AI recommendations
 - `POST /api/improved-recommendations` - Get AI-enhanced recommendations
@@ -139,11 +144,13 @@ python app.py
 - `GET /api/learning-summary/<candidate_id>` - Get learning summary
 
 ### Recruiter Endpoints
+
 - `GET /api/recruiter/applications` - Get all applications
 - `GET /api/recruiter/dashboard` - Get dashboard data
 - `POST /api/recruiter/application/<id>/review` - Review application
 
 ### System Endpoints
+
 - `GET /api/internships` - Get internships with filters
 - `GET /api/health` - Health check
 - `GET /api/system-status` - System status
@@ -151,18 +158,21 @@ python app.py
 ## 🧠 Reinforcement Learning Details
 
 ### Learning Algorithm
+
 - **Q-Learning inspired approach** for recommendation optimization
 - **Reward calculation** based on recruiter decisions and feedback scores
 - **Feature learning** for skills, companies, locations, and sectors
 - **Continuous improvement** through feedback loops
 
 ### Key Components
+
 - **Skill Weight Learning**: Adjusts skill importance based on feedback
 - **Company Preference Learning**: Learns company preferences from outcomes
 - **Location Preference Learning**: Adapts to location preferences
 - **Sector Preference Learning**: Learns sector-specific patterns
 
 ### Learning Metrics
+
 - **Recommendation Accuracy**: How well recommendations match recruiter preferences
 - **Skill Gap Identification**: Accuracy in identifying skill gaps
 - **Improvement Suggestions**: Quality of improvement recommendations
@@ -171,6 +181,7 @@ python app.py
 ## 🎨 Frontend Components
 
 ### Main Components
+
 - **Index.tsx**: Main navigation and routing
 - **MainContent.tsx**: Internship browsing and recommendations
 - **InternshipCard.tsx**: Individual internship display with apply functionality
@@ -178,6 +189,7 @@ python app.py
 - **CandidateFeedbackView.tsx**: Candidate feedback and learning dashboard
 
 ### Key Features
+
 - **Responsive Design**: Works on desktop and mobile
 - **Real-time Updates**: Live application status updates
 - **Interactive Feedback**: Rich feedback collection interface
@@ -186,6 +198,7 @@ python app.py
 ## 🔧 Configuration
 
 ### Environment Variables
+
 ```env
 # Supabase Configuration
 SUPABASE_URL=your_supabase_url
@@ -196,6 +209,7 @@ OPENAI_API_KEY=your_openai_api_key
 ```
 
 ### System Configuration
+
 - **Learning Rate**: 0.1 (adjustable in reinforcement_learning.py)
 - **Discount Factor**: 0.9 (adjustable)
 - **Exploration Rate**: 0.1 (adjustable)
@@ -204,6 +218,7 @@ OPENAI_API_KEY=your_openai_api_key
 ## 📈 Usage Examples
 
 ### For Candidates
+
 1. **Browse internships** using filters
 2. **Get AI recommendations** based on your profile
 3. **Apply to internships** with one click
@@ -212,6 +227,7 @@ OPENAI_API_KEY=your_openai_api_key
 6. **Track progress** in the learning dashboard
 
 ### For Recruiters
+
 1. **View all applications** in the dashboard
 2. **Review applications** with candidate details
 3. **Provide detailed feedback** with strengths and areas for improvement
@@ -242,6 +258,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🆘 Support
 
 For support and questions:
+
 - Create an issue in the repository
 - Contact the development team
 - Check the documentation

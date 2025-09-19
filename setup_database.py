@@ -74,7 +74,7 @@ async def setup_database():
         print("\nNext steps:")
         print("1. Start the Flask backend: python app.py")
         print("2. Build and start the frontend: cd twin-digital-copy-main/twin-digital-copy-main && npm run build && npm run dev")
-        print("3. Access the application at http://localhost:5000")
+        print("3. Access the application at http://localhost:8000")
         print("4. Use the navigation to switch between Candidate View, Recruiter Dashboard, and Feedback & Learning")
         
         return True
