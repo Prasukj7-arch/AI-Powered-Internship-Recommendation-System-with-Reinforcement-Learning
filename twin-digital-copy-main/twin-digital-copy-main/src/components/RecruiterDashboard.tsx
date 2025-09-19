@@ -26,18 +26,18 @@ import {
 interface Application {
   id: string;
   candidate_id: string;
-  company_name: string;
+  compunknown_name: string;
   internship_title: string;
   status: "pending" | "accepted" | "rejected";
   applied_at: string;
   users: {
     name: string;
     email: string;
-    profile_data: any;
+    profile_data: unknown;
   };
   application_data: {
-    candidate_profile: any;
-    internship_details: any;
+    candidate_profile: unknown;
+    internship_details: unknown;
   };
 }
 
@@ -46,7 +46,7 @@ interface DashboardStats {
   pending_applications: number;
   accepted_applications: number;
   rejected_applications: number;
-  applications_by_company: Record<string, number>;
+  applications_by_compunknown: Record<string, number>;
   recent_applications: Application[];
 }
 
@@ -274,7 +274,7 @@ const RecruiterDashboard: React.FC = () => {
                               {application.users.name}
                             </h3>
                             <p className="text-gray-600">
-                              {application.company_name} -{" "}
+                              {application.compunknown_name} -{" "}
                               {application.internship_title}
                             </p>
                             <p className="text-sm text-gray-500">
@@ -317,19 +317,19 @@ const RecruiterDashboard: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <h3 className="font-semibold">Applications by Company</h3>
-                  {dashboardStats?.applications_by_company &&
-                    Object.entries(dashboardStats.applications_by_company).map(
-                      ([company, count]) => (
-                        <div
-                          key={company}
-                          className="flex justify-between items-center py-2 border-b"
-                        >
-                          <span>{company}</span>
-                          <Badge variant="secondary">{count}</Badge>
-                        </div>
-                      )
-                    )}
+                  <h3 className="font-semibold">Applications by Compunknown</h3>
+                  {dashboardStats?.applications_by_compunknown &&
+                    Object.entries(
+                      dashboardStats.applications_by_compunknown
+                    ).map(([compunknown, count]) => (
+                      <div
+                        key={compunknown}
+                        className="flex justify-between items-center py-2 border-b"
+                      >
+                        <span>{compunknown}</span>
+                        <Badge variant="secondary">{count}</Badge>
+                      </div>
+                    ))}
                 </div>
               </CardContent>
             </Card>
@@ -349,7 +349,7 @@ const RecruiterDashboard: React.FC = () => {
                     {selectedApplication.users.name}
                   </h3>
                   <p className="text-gray-600">
-                    {selectedApplication.company_name} -{" "}
+                    {selectedApplication.compunknown_name} -{" "}
                     {selectedApplication.internship_title}
                   </p>
                 </div>
