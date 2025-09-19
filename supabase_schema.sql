@@ -211,7 +211,7 @@ CREATE TRIGGER update_feedback_updated_at BEFORE UPDATE ON public.feedback
 
 -- Insert sample data
 INSERT INTO public.users (id, email, name, user_type, profile_data) VALUES
-  ('550e8400-e29b-41d4-a716-446655440000', 'candidate@example.com', 'PORNADULLA USHA', 'candidate', 
+  ('550e8400-e29b-41d4-a716-446655440000', 'candidate@example.com', 'Ignited Minds', 'candidate', 
    '{"education": "B.Tech in Mechatronics", "skills": "Python, Machine Learning, Data Analysis", "location": "Tirupati, ANDHRA PRADESH"}'),
   ('550e8400-e29b-41d4-a716-446655440001', 'recruiter@example.com', 'Recruiter One', 'recruiter', 
    '{"department": "HR", "company": "Tech Corp", "experience": "5 years"}')

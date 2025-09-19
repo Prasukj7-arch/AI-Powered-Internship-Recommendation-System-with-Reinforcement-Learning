@@ -27,7 +27,7 @@ const InternshipCard = ({
   internshipId,
   title,
   areaField,
-  state, 
+  state,
   district,
   benefits,
   candidatesApplied,
@@ -35,7 +35,7 @@ const InternshipCard = ({
   recommendation,
   reasoning,
   skills_to_highlight,
-  onIncreaseMatch
+  onIncreaseMatch,
 }: InternshipCardProps) => {
   const [isApplying, setIsApplying] = useState(false);
   const [applied, setApplied] = useState(false);
@@ -43,34 +43,42 @@ const InternshipCard = ({
   const handleApply = async () => {
     try {
       setIsApplying(true);
-      
+
       // Get candidate profile from localStorage or use default
       const candidateProfile = {
-        name: "PORNADULLA USHA",
+        name: "Ignited Minds",
         education: "B.Tech in Mechatronics",
-        skills: "Python, Machine Learning, Data Analysis, Web Development, React, Node.js",
-        experience: "2 months data science internship, 1 year coding experience",
+        skills:
+          "Python, Machine Learning, Data Analysis, Web Development, React, Node.js",
+        experience:
+          "2 months data science internship, 1 year coding experience",
         interests: "AI/ML, Data Science, Software Development, Web Development",
         location: "Tirupati, ANDHRA PRADESH",
-        goals: "Become a senior data scientist in a leading tech company"
+        goals: "Become a senior data scientist in a leading tech company",
       };
-      
-      const result = await apiService.applyForInternship(internshipId, "550e8400-e29b-41d4-a716-446655440000", candidateProfile);
+
+      const result = await apiService.applyForInternship(
+        internshipId,
+        "550e8400-e29b-41d4-a716-446655440000",
+        candidateProfile
+      );
       setApplied(true);
-      console.log('Application successful:', result);
+      console.log("Application successful:", result);
     } catch (error) {
-      console.error('Application failed:', error);
+      console.error("Application failed:", error);
       // You could add a toast notification here
     } finally {
       setIsApplying(false);
     }
   };
   return (
-    <Card className={`p-4 space-y-3 relative transition-all duration-300 ${
-      recommendation 
-        ? 'shadow-lg hover:shadow-xl transform hover:-translate-y-1 bg-gradient-to-br from-white to-green-50 border-green-200' 
-        : 'hover:shadow-md'
-    }`}>
+    <Card
+      className={`p-4 space-y-3 relative transition-all duration-300 ${
+        recommendation
+          ? "shadow-lg hover:shadow-xl transform hover:-translate-y-1 bg-gradient-to-br from-white to-green-50 border-green-200"
+          : "hover:shadow-md"
+      }`}
+    >
       {/* Recommendation Header */}
       {recommendation && (
         <div className="absolute -top-3 left-4 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg">
@@ -120,9 +128,11 @@ const InternshipCard = ({
             <div>{benefits}</div>
           </div>
         </div>
-        
+
         <div>
-          <span className="text-muted-foreground">Candidates Already Applied</span>
+          <span className="text-muted-foreground">
+            Candidates Already Applied
+          </span>
           <div className="font-medium">{candidatesApplied}</div>
         </div>
       </div>
@@ -131,13 +141,21 @@ const InternshipCard = ({
       {recommendation && reasoning && (
         <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
           <div className="text-sm">
-            <div className="font-medium text-green-800 mb-2">🤖 AI Recommendation</div>
+            <div className="font-medium text-green-800 mb-2">
+              🤖 AI Recommendation
+            </div>
             <div className="text-green-700 mb-2">{reasoning}</div>
             {skills_to_highlight && skills_to_highlight.length > 0 && (
               <div className="flex flex-wrap gap-1">
-                <span className="text-xs text-green-600 font-medium">Skills to highlight:</span>
+                <span className="text-xs text-green-600 font-medium">
+                  Skills to highlight:
+                </span>
                 {skills_to_highlight.map((skill, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs bg-green-100 text-green-800">
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="text-xs bg-green-100 text-green-800"
+                  >
                     {skill}
                   </Badge>
                 ))}
@@ -148,22 +166,32 @@ const InternshipCard = ({
       )}
 
       {/* Action Buttons */}
-      <div className={`flex flex-col sm:flex-row gap-2 pt-2 ${recommendation ? 'sm:grid sm:grid-cols-3' : ''}`}>
-        <Button variant="outline" size="sm" className="flex-1 bg-blue-600 text-white hover:bg-blue-700">
+      <div
+        className={`flex flex-col sm:flex-row gap-2 pt-2 ${
+          recommendation ? "sm:grid sm:grid-cols-3" : ""
+        }`}
+      >
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
+        >
           View
         </Button>
-        <Button 
-          size="sm" 
-          className={`flex-1 ${applied ? 'bg-gray-500' : 'bg-green-600 hover:bg-green-700'} text-white`}
+        <Button
+          size="sm"
+          className={`flex-1 ${
+            applied ? "bg-gray-500" : "bg-green-600 hover:bg-green-700"
+          } text-white`}
           onClick={handleApply}
           disabled={isApplying || applied}
         >
-          {isApplying ? 'Applying...' : applied ? 'Applied' : 'Apply'}
+          {isApplying ? "Applying..." : applied ? "Applied" : "Apply"}
         </Button>
         {recommendation && (
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             className="flex-1 border-orange-300 text-orange-600 hover:bg-orange-50"
             onClick={onIncreaseMatch}
           >
