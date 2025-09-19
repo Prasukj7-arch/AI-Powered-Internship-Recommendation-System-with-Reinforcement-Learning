@@ -20,7 +20,7 @@ const Sidebar = () => {
           </Avatar>
           <div>
             <h3 className="font-semibold">PORNADULLA OM</h3>
-            <p className="text-sm text-muted-foreground">19 Yrs</p>
+            <p className="text-sm text-muted-foreground">23 Yrs</p>
             <p className="text-sm text-muted-foreground">B.Tech in Mechatronics</p>
           </div>
         </div>

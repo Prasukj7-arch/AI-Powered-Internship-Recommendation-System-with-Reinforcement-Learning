@@ -1,8 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Bell, Settings, HelpCircle, FileText, Video, Building2 } from "lucide-react";
+import { User, BarChart3, BookOpen } from "lucide-react";
 
-const Header = () => {
+interface HeaderProps {
+  currentView: 'candidate' | 'recruiter' | 'feedback';
+  onViewChange: (view: 'candidate' | 'recruiter' | 'feedback') => void;
+}
+
+const Header = ({ currentView, onViewChange }: HeaderProps) => {
   return (
     <header className="bg-white border-b border-border px-4 py-2">
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between max-w-full gap-4">
@@ -29,37 +34,31 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Center navigation */}
-        <div className="flex flex-wrap items-center gap-2 lg:gap-6">
-          <Button variant="ghost" size="sm" className="text-sm">
-            <HelpCircle className="w-4 h-4 mr-1" />
-            FAQs
-          </Button>
-          <Button variant="ghost" size="sm" className="text-sm">
-            <FileText className="w-4 h-4 mr-1" />
-            Guidelines
-          </Button>
-          <Button variant="ghost" size="sm" className="text-sm">
-            <Building2 className="w-4 h-4 mr-1" />
-            Partner Companies
-          </Button>
-          <Button variant="ghost" size="sm" className="text-sm">
-            <FileText className="w-4 h-4 mr-1" />
-            Manuals
-          </Button>
-          <Button variant="ghost" size="sm" className="text-sm">
-            <Video className="w-4 h-4 mr-1" />
-            Tutorials/Guidance Videos
-          </Button>
-        </div>
-
         {/* Right side */}
         <div className="flex flex-wrap items-center gap-2 lg:gap-3">
-          <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
+          <Button 
+            size="sm" 
+            className={`${currentView === 'recruiter' ? 'bg-blue-600' : 'bg-orange-500 hover:bg-orange-600'} text-white`}
+            onClick={() => onViewChange('recruiter')}
+          >
+            <BarChart3 className="w-4 h-4 mr-1" />
             Admin Portal
           </Button>
-          <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
+          <Button 
+            size="sm" 
+            className={`${currentView === 'candidate' ? 'bg-blue-600' : 'bg-orange-500 hover:bg-orange-600'} text-white`}
+            onClick={() => onViewChange('candidate')}
+          >
+            <User className="w-4 h-4 mr-1" />
             My Portal
+          </Button>
+          <Button 
+            size="sm" 
+            className={`${currentView === 'feedback' ? 'bg-blue-600' : 'bg-orange-500 hover:bg-orange-600'} text-white`}
+            onClick={() => onViewChange('feedback')}
+          >
+            <BookOpen className="w-4 h-4 mr-1" />
+            Learning
           </Button>
           <Select defaultValue="en">
             <SelectTrigger className="w-24 h-8">
@@ -70,9 +69,6 @@ const Header = () => {
               <SelectItem value="hi">हिंदी</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="ghost" size="sm">
-            <Settings className="w-4 h-4" />
-          </Button>
         </div>
       </div>
     </header>
