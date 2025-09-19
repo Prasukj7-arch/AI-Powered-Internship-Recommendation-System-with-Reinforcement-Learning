@@ -3,7 +3,7 @@
  * Handles all communication with the backend
  */
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = "http://localhost:8000/api";
 
 export interface Internship {
   id: number;
@@ -40,7 +40,7 @@ export interface RecommendationResult {
     reasoning: string;
     skills_to_highlight: string[];
   }>;
-  method: 'primary' | 'backup';
+  method: "primary" | "backup";
   fallback_used: boolean;
   timestamp: string;
 }
@@ -63,11 +63,14 @@ export interface InternshipFilters {
 }
 
 class ApiService {
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  private async request<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
     const config: RequestInit = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...options.headers,
       },
       ...options,
@@ -75,10 +78,12 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        throw new Error(
+          errorData.error || `HTTP error! status: ${response.status}`
+        );
       }
 
       return await response.json();
@@ -90,12 +95,12 @@ class ApiService {
 
   // System Status
   async getSystemStatus(): Promise<SystemStatus> {
-    return this.request<SystemStatus>('/system-status');
+    return this.request<SystemStatus>("/system-status");
   }
 
   // Health Check
   async getHealth(): Promise<{ status: string; message: string }> {
-    return this.request<{ status: string; message: string }>('/health');
+    return this.request<{ status: string; message: string }>("/health");
   }
 
   // Internships
@@ -110,8 +115,10 @@ class ApiService {
     });
 
     const queryString = params.toString();
-    const endpoint = queryString ? `/internships?${queryString}` : '/internships';
-    
+    const endpoint = queryString
+      ? `/internships?${queryString}`
+      : "/internships";
+
     return this.request<{
       internships: Internship[];
       total: number;
@@ -120,27 +127,33 @@ class ApiService {
   }
 
   // Recommendations
-  async getRecommendations(profile: CandidateProfile): Promise<RecommendationResult> {
-    return this.request<RecommendationResult>('/recommend', {
-      method: 'POST',
+  async getRecommendations(
+    profile: CandidateProfile
+  ): Promise<RecommendationResult> {
+    return this.request<RecommendationResult>("/recommend", {
+      method: "POST",
       body: JSON.stringify(profile),
     });
   }
 
   // User Profile
   async getUserProfile(): Promise<unknown> {
-    return this.request<unknown>('/user/profile');
+    return this.request<unknown>("/user/profile");
   }
 
   async updateUserProfile(profile: any): Promise<unknown> {
-    return this.request<unknown>('/user/profile', {
-      method: 'POST',
+    return this.request<unknown>("/user/profile", {
+      method: "POST",
       body: JSON.stringify(profile),
     });
   }
 
   // Applications
-  async applyForInternship(internshipId: string, userId: string | number, candidateProfile?: any): Promise<{
+  async applyForInternship(
+    internshipId: string,
+    userId: string | number,
+    candidateProfile?: any
+  ): Promise<{
     success: boolean;
     message: string;
     application_id: string;
@@ -149,8 +162,8 @@ class ApiService {
       success: boolean;
       message: string;
       application_id: string;
-    }>('/apply', {
-      method: 'POST',
+    }>("/apply", {
+      method: "POST",
       body: JSON.stringify({
         internship_id: internshipId,
         user_id: userId,
@@ -160,9 +173,11 @@ class ApiService {
   }
 
   // Improved Recommendations
-  async getImprovedRecommendations(profile: CandidateProfile): Promise<RecommendationResult> {
-    return this.request<RecommendationResult>('/improved-recommendations', {
-      method: 'POST',
+  async getImprovedRecommendations(
+    profile: CandidateProfile
+  ): Promise<RecommendationResult> {
+    return this.request<RecommendationResult>("/improved-recommendations", {
+      method: "POST",
       body: JSON.stringify(profile),
     });
   }
@@ -175,14 +190,17 @@ class ApiService {
     return this.request<{
       applications: any[];
       total: number;
-    }>('/recruiter/applications');
+    }>("/recruiter/applications");
   }
 
   async getRecruiterDashboard(): Promise<any> {
-    return this.request<any>('/recruiter/dashboard');
+    return this.request<any>("/recruiter/dashboard");
   }
 
-  async reviewApplication(applicationId: string, reviewData: any): Promise<{
+  async reviewApplication(
+    applicationId: string,
+    reviewData: any
+  ): Promise<{
     message: string;
     application_id: string;
     decision: string;
@@ -194,7 +212,7 @@ class ApiService {
       decision: string;
       feedback_id: string;
     }>(`/recruiter/application/${applicationId}/review`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(reviewData),
     });
   }

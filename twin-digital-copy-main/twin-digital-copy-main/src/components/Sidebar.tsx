@@ -9,19 +9,19 @@ const Sidebar = () => {
       {/* Candidate ID */}
       <div className="bg-orange-100 text-orange-800 px-3 py-1 rounded text-sm font-medium flex items-center gap-2">
         <Edit className="w-4 h-4" />
-        Candidate ID 51423
+        Candidate ID 06066
       </div>
 
       {/* Profile Card */}
       <Card className="p-4">
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="w-16 h-16">
-            <AvatarFallback className="text-lg">DU</AvatarFallback>
+            <AvatarFallback className="text-lg">IM</AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="font-semibold">PORNADULLA OM</h3>
-            <p className="text-sm text-muted-foreground">23 Yrs</p>
-            <p className="text-sm text-muted-foreground">B.Tech in Mechatronics</p>
+            <h3 className="font-semibold">Ignited Minds</h3>
+            <p className="text-sm text-muted-foreground">22 Yrs</p>
+            <p className="text-sm text-muted-foreground">B.Tech</p>
           </div>
         </div>
 
@@ -39,7 +39,7 @@ const Sidebar = () => {
         {/* Location */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
           <MapPin className="w-4 h-4" />
-          <span>Tirupati, ANDHRA PRADESH</span>
+          <span>Hyderabad, Telangana</span>
         </div>
 
         {/* Profile Actions */}
@@ -78,19 +78,27 @@ const Sidebar = () => {
         <div className="space-y-2">
           <div className="flex justify-between items-center">
             <span className="text-sm">Pending</span>
-            <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">1</span>
+            <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">
+              1
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm">Disposed</span>
-            <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">0</span>
+            <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+              0
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm">Clarification Sought</span>
-            <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">1</span>
+            <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">
+              1
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm">Re-submitted</span>
-            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">0</span>
+            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+              0
+            </span>
           </div>
         </div>
       </Card>

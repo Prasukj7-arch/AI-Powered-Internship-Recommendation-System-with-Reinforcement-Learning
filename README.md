@@ -20,6 +20,7 @@ A fully functional AI-powered internship recommendation system with RAG (Retriev
 ## 📦 Quick Start
 
 ### 1. Setup Environment
+
 ```bash
 # Create virtual environment
 python -m venv venv
@@ -35,6 +36,7 @@ pip install -r requirements.txt
 ```
 
 ### 2. Configure API Keys
+
 ```bash
 # Copy environment template
 copy env.example .env
@@ -44,6 +46,7 @@ OPENROUTER_API_KEY=your_api_key_here
 ```
 
 ### 3. Build Frontend
+
 ```bash
 cd twin-digital-copy-main/twin-digital-copy-main
 npm install
@@ -52,13 +55,15 @@ cd ../..
 ```
 
 ### 4. Run Application
+
 ```bash
 python app.py
 ```
 
 ### 5. Access Application
-- **Frontend**: http://localhost:5000
-- **API**: http://localhost:5000/api/
+
+- **Frontend**: http://localhost:8000
+- **API**: http://localhost:8000/api/
 
 ## 🎯 How to Use
 
@@ -88,6 +93,7 @@ The system uses `internships_all_streams_edited.csv` containing 200+ internship 
 ## 🤖 AI Recommendation System
 
 The RAG system analyzes:
+
 - **Skills**: Python, Machine Learning, Web Development, etc.
 - **Interests**: AI/ML, Data Science, Technology, etc.
 - **Location**: State and district preferences
@@ -97,6 +103,7 @@ The RAG system analyzes:
 ## 🎉 Success!
 
 Your PM Internship Recommendation System is now:
+
 - ✅ Fully functional with AI recommendations
 - ✅ Responsive across all devices
 - ✅ Clean and organized codebase

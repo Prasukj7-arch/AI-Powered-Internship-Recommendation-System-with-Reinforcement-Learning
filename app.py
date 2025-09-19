@@ -559,8 +559,8 @@ def main():
     """Main function to start the application"""
     print("🚀 Starting PM Internship Recommendation System with RAG")
     print("=" * 60)
-    print("📱 Frontend: http://localhost:5000")
-    print("🔧 API: http://localhost:5000/api/")
+    print("📱 Frontend: http://localhost:8000")
+    print("🔧 API: http://localhost:8000/api/")
     print("=" * 60)
     
     # Load internships data
@@ -580,7 +580,7 @@ def main():
     
     # Start Flask app
     try:
-        app.run(host='0.0.0.0', port=5000, debug=True)
+        app.run(host='0.0.0.0', port=8000, debug=True)
     except KeyboardInterrupt:
         print("\n👋 Shutting down gracefully...")
     except Exception as e:
