@@ -141,7 +141,7 @@ class ApiService {
     return this.request<unknown>("/user/profile");
   }
 
-  async updateUserProfile(profile: any): Promise<unknown> {
+  async updateUserProfile(profile: unknown): Promise<unknown> {
     return this.request<unknown>("/user/profile", {
       method: "POST",
       body: JSON.stringify(profile),
@@ -152,7 +152,7 @@ class ApiService {
   async applyForInternship(
     internshipId: string,
     userId: string | number,
-    candidateProfile?: any
+    candidateProfile?: unknown
   ): Promise<{
     success: boolean;
     message: string;
@@ -184,22 +184,22 @@ class ApiService {
 
   // Recruiter Dashboard
   async getRecruiterApplications(): Promise<{
-    applications: any[];
+    applications: unknown[];
     total: number;
   }> {
     return this.request<{
-      applications: any[];
+      applications: unknown[];
       total: number;
     }>("/recruiter/applications");
   }
 
-  async getRecruiterDashboard(): Promise<any> {
-    return this.request<any>("/recruiter/dashboard");
+  async getRecruiterDashboard(): Promise<unknown> {
+    return this.request<unknown>("/recruiter/dashboard");
   }
 
   async reviewApplication(
     applicationId: string,
-    reviewData: any
+    reviewData: unknown
   ): Promise<{
     message: string;
     application_id: string;
@@ -219,40 +219,40 @@ class ApiService {
 
   // Candidate Feedback
   async getCandidateApplications(candidateId: string): Promise<{
-    applications: any[];
+    applications: unknown[];
     total: number;
   }> {
     return this.request<{
-      applications: any[];
+      applications: unknown[];
       total: number;
     }>(`/candidate/applications/${candidateId}`);
   }
 
   async getCandidateFeedbackHistory(candidateId: string): Promise<{
     candidate_id: string;
-    feedback_history: any[];
+    feedback_history: unknown[];
     total_feedback: number;
   }> {
     return this.request<{
       candidate_id: string;
-      feedback_history: any[];
+      feedback_history: unknown[];
       total_feedback: number;
     }>(`/candidate/feedback-history/${candidateId}`);
   }
 
   async getLearningSummary(candidateId: string): Promise<{
     candidate_id: string;
-    learning_summary: any;
+    learning_summary: unknown;
   }> {
     return this.request<{
       candidate_id: string;
-      learning_summary: any;
+      learning_summary: unknown;
     }>(`/learning-summary/${candidateId}`);
   }
 
   // User Recommendations
-  async getUserRecommendations(userId: number): Promise<any> {
-    return this.request<any>(`/recommendations/${userId}`);
+  async getUserRecommendations(userId: number): Promise<unknown> {
+    return this.request<unknown>(`/recommendations/${userId}`);
   }
 }
 
